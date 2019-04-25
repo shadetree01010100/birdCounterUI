@@ -1,45 +1,57 @@
 import React, { Component } from "react";
-import { Chart, Progress } from '@nio/ui-kit';
+import { Chart, Loader, Progress } from '@nio/ui-kit';
 import { withPubkeeper } from "../providers/pubkeeper";
 
 class Page extends Component {
-  state = { state: "", image: "", predictions: [], tally: {}, timestamp: "" };
+  state = {
+      state: "",
+      image: "",
+      predictions: [],
+      tally: {},
+      timestamp: "",
+      history: []
+  };
 
   componentDidMount = () => {
     const { pkClient } = this.props;
-    pkClient.addPatron("birds.capture", patron => { 
+    pkClient.addPatron("birds", patron => {
       patron.on("message", this.writeDataToState);
       return () => {
         // deactivation/tear-down
         patron.off("message", this.writeDataToState);
       };
     });
-    pkClient.addPatron("birds.tally", patron => { 
-      patron.on("message", this.writeDataToState);
+    pkClient.addPatron("stats", patron => {
+      patron.on("message", this.writeHistoryToState);
       return () => {
         // deactivation/tear-down
-        patron.off("message", this.writeDataToState);
+        patron.off("message", this.writeHistoryToState);
       };
     });
   };
 
   writeDataToState = (rawData) => {
     const newState = this.parseData(rawData);
+    newState.timestamp = this.getTime(newState.timestamp);
     this.setState(newState);
   };
+
+  writeHistoryToState = (rawData) => {
+      const newState = this.parseData(rawData);
+      this.setState(newState);
+    };
 
   parseData = (rawData) => {
     const rawJson = new TextDecoder().decode(rawData);
     const json = JSON.parse(rawJson);
     const parsedJson = json[json.length-1]
-    parsedJson.timestamp = this.getTime(parsedJson.timestamp);
     return parsedJson;
   };
 
   getTime = (timestamp) => {
     var localTime = new Date(timestamp);
     var localTime = localTime.toLocaleString(
-      "en-US", { 
+      "en-US", {
         weekday: "long",
         hour: "numeric",
         minute: "numeric",
@@ -65,8 +77,9 @@ class Page extends Component {
   };
 
   render() {
-    const { state, image, predictions, tally, timestamp } = this.state;
+    const { state, image, predictions, tally, timestamp, history } = this.state;
     const { commonName, latinName } = this.speciesName(state);
+    console.log(history);
     return (
       <center>
         <table cellSpacing="10" border="1"  width="100%">
@@ -79,7 +92,7 @@ class Page extends Component {
                 <h2>{ commonName }</h2>
                 <h5><i>{ latinName }</i></h5>
                 Sighted: { timestamp }
-                <hr className="dashed" /> 
+                <hr className="dashed" />
               </td>
             </tr>
             {predictions && predictions.map(p => (
@@ -92,15 +105,15 @@ class Page extends Component {
                     this.percentScore(p.score)
                   }%
                 </td>
-              </tr> 
+              </tr>
             ))}
           </tbody>
         </table>
         <br />
         <table cellSpacing="10" border="1" width="100%">
           <tbody>
-            <tr>
-              <td>
+            <tr valign="top">
+              <td width="25%">
                 <Chart type="pie" data={{
                   "datasets": [
                     {
@@ -109,8 +122,26 @@ class Page extends Component {
                       "values": Object.values(tally)
                     }
                   ],
-                  "labels": Object.keys(tally)
-                }}/>
+                  "labels": Object.keys(tally),
+              }} options={{
+                  "legend": {"display": false}
+              }}/>
+              </td>
+              <td>
+                <Chart
+                    title="Past 72 Hours Activity"
+                    type="bar"
+                    data={{
+                        "chartType": "bar",
+                        "datasets":[
+                            {"values": history}
+                        ],
+                        "labels": Array(history.length).fill("")
+                    }}
+                    barOptions={{
+                        spaceRatio: 0
+                    }}
+                  />
               </td>
             </tr>
           </tbody>
