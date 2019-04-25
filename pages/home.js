@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import { Chart, Loader, Progress } from '@nio/ui-kit';
 import { withPubkeeper } from "../providers/pubkeeper";
 
+function add(accumulator, a) {
+    return accumulator + a;
+}
+
 class Page extends Component {
   state = {
       state: "",
@@ -72,6 +76,23 @@ class Page extends Component {
     };
   };
 
+  sortTally = (tally) => {
+    const mappedTally = new Map(Object.entries(tally));
+    const topValues = new Map([...mappedTally.entries()].sort((a, b) => b[1] - a[1]));
+    return topValues;
+  };
+
+  truncateTally = (tally) => {
+    const keys = Array.from(tally.keys());
+    const values = Array.from(tally.values());
+    const remainder = values.splice(5);
+    keys.splice(5);
+    keys.push("Other");
+    const remainderSum = remainder.reduce(add);
+    values.push(remainderSum);
+    return keys, values;
+  };
+
   percentScore = (score) => {
     return Math.trunc(score * 1000) / 10;
   };
@@ -79,7 +100,11 @@ class Page extends Component {
   render() {
     const { state, image, predictions, tally, timestamp, history } = this.state;
     const { commonName, latinName } = this.speciesName(state);
-    console.log(history);
+    // const today = this.sortTally(tally);
+    // const [ todayLabels, todayValues ] = this.truncateTally(today);
+    const today = tally;
+    const todayLabels = Object.keys(tally);
+    const todayValues = Object.values(tally);
     return (
       <center>
         <table cellSpacing="10" border="1"  width="100%">
@@ -119,10 +144,10 @@ class Page extends Component {
                     {
                       "name": "dem birbs",
                       "chartType": "line",
-                      "values": Object.values(tally)
+                      "values": todayValues
                     }
                   ],
-                  "labels": Object.keys(tally),
+                  "labels": todayLabels,
               }} options={{
                   "legend": {"display": false}
               }}/>
