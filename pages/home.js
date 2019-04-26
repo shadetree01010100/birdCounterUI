@@ -105,6 +105,8 @@ class Page extends Component {
     const today = tally;
     const todayLabels = Object.keys(tally);
     const todayValues = Object.values(tally);
+    console.log(todayLabels);
+    console.log(todayValues);
     return (
       <center>
         <table cellSpacing="10" border="0"  width="100%">
@@ -114,28 +116,23 @@ class Page extends Component {
                 <img src={ `data:image/jpeg;base64,${image}` } width="100%" />
               </td>
               <td>
-                <h2>{ commonName }</h2>
-                <h5><i>{ latinName }</i></h5>
-                Sighted: { timestamp }
-                <hr className="dashed" />
+                <h1>{ commonName }</h1>
+                <h4><i>{ latinName }</i></h4>
+                <b>Sighted: { timestamp }</b>
               </td>
             </tr>
             {predictions && predictions.map(p => (
               <tr key={p.label}>
                 <td>
                   <Progress value={this.percentScore(p.score)} />
-                  {
-                    this.speciesName(p.label).commonName
-                  }: {
-                    this.percentScore(p.score)
-                  }%
+                  <b><a href={ `https://www.google.com/search?q=${ this.speciesName(p.label).latinName.replace(" ", "+") }&tbm=isch` } target="_blank">{ this.speciesName(p.label).commonName }</a>: { this.percentScore(p.score) }%</b>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
         <br />
-        <table cellSpacing="10" border="0" width="100%">
+        <table cellSpacing="10" border="0" width="100%" height="50%">
           <tbody>
             <tr valign="top">
               <td width="75%">
