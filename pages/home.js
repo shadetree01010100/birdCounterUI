@@ -100,7 +100,7 @@ class Page extends Component {
         <Row>
           <Col md="6">
             <Card className="mb-4 overflow-hidden topRow">
-              <CardBody className="p-0 overflow-hidden">
+              <CardBody className="p-0 overflow-hidden image-holder">
                 {image ? (
                   <img
                     alt="this is my birdfeeder. there are many like it, but this one is mine."
