@@ -44,7 +44,7 @@ class Page extends Component {
     if (newState.tally) {
       newState.pieChartData = [];
       const sortedTally = this.sortTally(newState.tally);
-      sortedTally.forEach((v, k) => newState.pieChartData.push({ title: `${k} - ${v}%`, value: v, color: lightness('#3cafda', (Math.floor(Math.random() * 22) + 1)) }));
+      sortedTally.forEach((v, k) => newState.pieChartData.push({ title: `${/\(([^)]+)\)/.exec(k)[1]} - ${v} sightings`, value: v, color: lightness('#3cafda', (Math.floor(Math.random() * 22) + 1)) }));
     }
     this.setState(newState);
   };
