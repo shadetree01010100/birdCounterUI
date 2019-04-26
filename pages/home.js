@@ -13,7 +13,8 @@ class Page extends Component {
       predictions: [],
       tally: {},
       timestamp: "",
-      history: []
+      history: [],
+      cumulative_count: 0
   };
 
   componentDidMount = () => {
@@ -48,7 +49,7 @@ class Page extends Component {
   parseData = (rawData) => {
     const rawJson = new TextDecoder().decode(rawData);
     const json = JSON.parse(rawJson);
-    const parsedJson = json[json.length-1]
+    const parsedJson = json[json.length - 1];
     return parsedJson;
   };
 
@@ -98,15 +99,18 @@ class Page extends Component {
   };
 
   render() {
-    const { state, image, predictions, tally, timestamp, history } = this.state;
+    const { state, image, predictions, tally, timestamp, history, cumulative_count } = this.state;
     const { commonName, latinName } = this.speciesName(state);
     // const today = this.sortTally(tally);
     // const [ todayLabels, todayValues ] = this.truncateTally(today);
-    const today = tally;
     const todayLabels = Object.keys(tally);
     const todayValues = Object.values(tally);
-    console.log(todayLabels);
-    console.log(todayValues);
+    const colors = new Array(history.length).fill("#6EE1FF");
+    history.push(cumulative_count);
+    colors.push("#87F7C1");
+    console.log(history);
+    console.log(colors);
+
     return (
       <center>
         <table cellSpacing="10" border="0"  width="100%">
@@ -135,23 +139,20 @@ class Page extends Component {
         <table cellSpacing="10" border="0" width="100%" height="50%">
           <tbody>
             <tr valign="top">
-              <td width="75%">
+              <td>
                 <Chart
                     title="Past 72 Hours Activity"
                     type="bar"
                     data={{
-                        "chartType": "bar",
                         "datasets":[
-                            {"values": history}
+                          {"values": history}
                         ],
                         "labels": Array(history.length).fill("")
                     }}
-                    barOptions={{
-                        spaceRatio: 0
-                    }}
+                    colors={ colors }
                   />
               </td>
-              <td>
+              <td width="25%">
                 <Chart
                   title="Species Distribution (Today)"
                   type="pie"
