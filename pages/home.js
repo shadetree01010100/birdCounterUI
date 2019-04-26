@@ -107,7 +107,7 @@ class Page extends Component {
     const todayValues = Object.values(tally);
     return (
       <center>
-        <table cellSpacing="10" border="1"  width="100%">
+        <table cellSpacing="10" border="0"  width="100%">
           <tbody>
             <tr valign="top">
               <td width="50%" rowSpan="6">
@@ -135,22 +135,26 @@ class Page extends Component {
           </tbody>
         </table>
         <br />
-        <table cellSpacing="10" border="1" width="100%">
+        <table cellSpacing="10" border="0" width="100%">
           <tbody>
             <tr valign="top">
               <td width="25%">
-                <Chart type="pie" data={{
-                  "datasets": [
-                    {
-                      "name": "dem birbs",
-                      "chartType": "line",
-                      "values": todayValues
-                    }
-                  ],
-                  "labels": todayLabels,
-              }} options={{
-                  "legend": {"display": false}
-              }}/>
+                <Chart
+                  title="Species Distribution (Today)"
+                  type="pie"
+                  data={{
+                    "datasets": [
+                      {
+                        "chartType": "line",
+                        "values": todayValues
+                      }
+                    ],
+                    "labels": todayLabels,
+                  }}
+                  options={{
+                    "legend": {"display": false}
+                  }}
+                />
               </td>
               <td>
                 <Chart
