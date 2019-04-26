@@ -138,7 +138,23 @@ class Page extends Component {
         <table cellSpacing="10" border="0" width="100%">
           <tbody>
             <tr valign="top">
-              <td width="25%">
+              <td width="75%">
+                <Chart
+                    title="Past 72 Hours Activity"
+                    type="bar"
+                    data={{
+                        "chartType": "bar",
+                        "datasets":[
+                            {"values": history}
+                        ],
+                        "labels": Array(history.length).fill("")
+                    }}
+                    barOptions={{
+                        spaceRatio: 0
+                    }}
+                  />
+              </td>
+              <td>
                 <Chart
                   title="Species Distribution (Today)"
                   type="pie"
@@ -155,22 +171,6 @@ class Page extends Component {
                     "legend": {"display": false}
                   }}
                 />
-              </td>
-              <td>
-                <Chart
-                    title="Past 72 Hours Activity"
-                    type="bar"
-                    data={{
-                        "chartType": "bar",
-                        "datasets":[
-                            {"values": history}
-                        ],
-                        "labels": Array(history.length).fill("")
-                    }}
-                    barOptions={{
-                        spaceRatio: 0
-                    }}
-                  />
               </td>
             </tr>
           </tbody>
