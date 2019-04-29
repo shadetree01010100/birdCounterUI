@@ -15,7 +15,8 @@ class Page extends Component {
     predictions: [],
     tally: {},
     timestamp: '',
-    history: [],
+    history: Array(50).fill(0),
+    lineChartXAxis: Array(50).fill(''),
     pieChartSpecies: '',
     pieChartData: [],
     cumulative_count: 0,
@@ -25,22 +26,22 @@ class Page extends Component {
     const { pkClient } = this.props;
     pkClient.addPatron('birds', (patron) => {
       patron.on('message', this.writeDataToState);
-      return () => {
-        // deactivation/tear-down
-        patron.off('message', this.writeDataToState);
-      };
+      return () => patron.off('message', this.writeDataToState);
     });
     pkClient.addPatron('stats', (patron) => {
       patron.on('message', this.writeHistoryToState);
-      return () => {
-        // deactivation/tear-down
-        patron.off('message', this.writeHistoryToState);
-      };
+      return () =>  patron.off('message', this.writeHistoryToState);
     });
   };
 
   writeDataToState = (rawData) => {
     const newState = this.parseData(rawData);
+    newState.lineChartXAxis = [Date.now()];
+    for (let x = 0; x < 49; x += 1) {
+      newState.lineChartXAxis.unshift(newState.lineChartXAxis[0] - (86.4 * 60000));
+    }
+    newState.lineChartXAxis = newState.lineChartXAxis.map(t => this.getLabelTime(t));
+
     newState.timestamp = this.getTime(newState.timestamp);
     if (newState.tally) {
       newState.pieChartData = [];
@@ -58,14 +59,20 @@ class Page extends Component {
   parseData = (rawData) => {
     const rawJson = new TextDecoder().decode(rawData);
     const json = JSON.parse(rawJson);
-    const parsedJson = json[json.length - 1];
-    return parsedJson;
+    return json[json.length - 1];
   };
 
   getTime = timestamp => new Date(timestamp).toLocaleString('en-US', {
     weekday: 'long',
     hour: 'numeric',
     minute: 'numeric',
+    hour12: true,
+  });
+
+  getLabelTime = timestamp => new Date(timestamp).toLocaleString('en-US', {
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
     hour12: true,
   });
 
@@ -79,8 +86,7 @@ class Page extends Component {
 
   sortTally = (tally) => {
     const mappedTally = new Map(Object.entries(tally));
-    const topValues = new Map([...mappedTally.entries()].sort((a, b) => b[1] - a[1]));
-    return topValues;
+    return new Map([...mappedTally.entries()].sort((a, b) => b[1] - a[1]));
   };
 
   percentScore = score => Math.trunc(score * 1000) / 10;
@@ -93,7 +99,7 @@ class Page extends Component {
   clearPieChartLabel = () => this.setState({ pieChartSpecies: '' });
 
   render = () => {
-    const { state, image, predictions, timestamp, history, pieChartSpecies, pieChartData } = this.state;
+    const { state, image, predictions, timestamp, history, lineChartXAxis, pieChartSpecies, pieChartData } = this.state;
     const { commonName, latinName } = this.speciesName(state);
 
     return (
@@ -143,27 +149,24 @@ class Page extends Component {
           <Col md="9">
             <Card className="mb-4 bottomRow">
               <CardBody className="p-1">
-                {history && history.length > 0 ? (
-                  <Chart
-                    title={`Past 72 Hours Activity`}
-                    type="line"
-                    data={{
-                      chartType: 'line',
-                      datasets: [{ values: history }],
-                      labels: Array(history.length).fill(''),
-                    }}
-                    lineOptions={{
-                      heatline: 1,
-                      hideDots: 1,
-                      regionFill: 1,
-                    }}
-                    axisOptions={{
-                      xAxisMode: 'tick',
-                    }}
-                  />
-                ) : (
-                  <Loader />
-                )}
+                <Chart
+                  title={`Past 72 Hours Activity`}
+                  type="line"
+                  data={{
+                    chartType: 'line',
+                    datasets: [{ values: history }],
+                    labels: lineChartXAxis,
+                  }}
+                  lineOptions={{
+                    heatline: 1,
+                    hideDots: 1,
+                    regionFill: 1,
+                  }}
+                  axisOptions={{
+                    xAxisMode: 'tick',
+                    xIsSeries: 1,
+                  }}
+                />
               </CardBody>
             </Card>
           </Col>
