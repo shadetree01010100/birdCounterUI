@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar } from '@nio/ui-kit';
 
-import '../assets/app.scss';
+import '../app.scss';
 import Routes from './routes';
 
 const App = () => (
