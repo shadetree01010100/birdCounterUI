@@ -4,8 +4,8 @@
   "deploymentUrl": "ui-scaffold.demo.niolabs.com",
   "private": true,
   "scripts": {
-    "build": "webpack --mode production --config webpack.prod.js",
-    "start": "webpack-dev-server --mode development --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+    "start": "webpack-dev-server --config webpack.dev.js",
     "lint": "eslint --fix components && eslint --fix pages && eslint --fix providers && sass-lint --verbose"
   },
   "author": "niolabs",
