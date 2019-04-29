@@ -10,7 +10,7 @@ function add(accumulator, a) {
 
 class Page extends Component {
   state = {
-    state: '',
+   state: '',
     image: '',
     predictions: [],
     tally: {},
@@ -18,6 +18,7 @@ class Page extends Component {
     history: [],
     pieChartSpecies: '',
     pieChartData: [],
+    cumulative_count: 0,
   };
 
   componentDidMount = () => {
@@ -144,7 +145,7 @@ class Page extends Component {
               <CardBody className="p-1">
                 {history && history.length > 0 ? (
                   <Chart
-                    title="Past 72 Hours Activity"
+                    title={`Past 72 Hours Activity`}
                     type="line"
                     data={{
                       chartType: 'line',
