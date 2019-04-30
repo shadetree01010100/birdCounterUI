@@ -36,12 +36,6 @@ class Page extends Component {
 
   writeDataToState = (rawData) => {
     const newState = this.parseData(rawData);
-    newState.lineChartXAxis = [Date.now()];
-    for (let x = 0; x < 49; x += 1) {
-      newState.lineChartXAxis.unshift(newState.lineChartXAxis[0] - (86.4 * 60000));
-    }
-    newState.lineChartXAxis = newState.lineChartXAxis.map(t => this.getLabelTime(t));
-
     newState.timestamp = this.getTime(newState.timestamp);
     if (newState.tally) {
       newState.pieChartData = [];
@@ -53,6 +47,11 @@ class Page extends Component {
 
   writeHistoryToState = (rawData) => {
     const newState = this.parseData(rawData);
+    newState.lineChartXAxis = [Date.now()];
+    for (let x = 0; x < 71; x += 1) {
+      newState.lineChartXAxis.unshift(newState.lineChartXAxis[0] - (86.4 * 60000));
+    }
+    newState.lineChartXAxis = newState.lineChartXAxis.map(t => this.getLabelTime(t));
     this.setState(newState);
   };
 
