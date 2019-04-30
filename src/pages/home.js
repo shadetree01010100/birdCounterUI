@@ -47,12 +47,18 @@ class Page extends Component {
 
   writeHistoryToState = (rawData) => {
     const newState = this.parseData(rawData);
-    newState.lineChartXAxis = [Date.now()];
-    for (let x = 0; x < 71; x += 1) {
-      newState.lineChartXAxis.unshift(newState.lineChartXAxis[0] - (86.4 * 60000));
+    if (newState.history) {
+      console.log(newState.history);
+      // add current hour count to end of history
+      newState.history.push(newState.cumulative_count || 0);
     }
-    newState.lineChartXAxis = newState.lineChartXAxis.map(t => this.getLabelTime(t));
+    // newState.lineChartXAxis = [Date.now()];
+    // for (let x = 0; x < 71; x += 1) {
+    //   newState.lineChartXAxis.unshift(newState.lineChartXAxis[0] - (86.4 * 60000));
+    // }
+    // newState.lineChartXAxis = newState.lineChartXAxis.map(t => this.getLabelTime(t));
     this.setState(newState);
+    console.log(this.state.history);
   };
 
   parseData = (rawData) => {
@@ -154,7 +160,9 @@ class Page extends Component {
                   data={{
                     chartType: 'line',
                     datasets: [{ values: history }],
-                    labels: lineChartXAxis,
+                    // labels: lineChartXAxis,
+                    // 72 items in history + 1 for current hour
+                    labels: Array(73).fill(''),
                   }}
                   lineOptions={{
                     heatline: 1,
