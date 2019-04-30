@@ -48,7 +48,6 @@ class Page extends Component {
   writeHistoryToState = (rawData) => {
     const newState = this.parseData(rawData);
     if (newState.history) {
-      console.log(newState.history);
       // add current hour count to end of history
       newState.history.push(newState.cumulative_count || 0);
     }
@@ -58,7 +57,6 @@ class Page extends Component {
     // }
     // newState.lineChartXAxis = newState.lineChartXAxis.map(t => this.getLabelTime(t));
     this.setState(newState);
-    console.log(this.state.history);
   };
 
   parseData = (rawData) => {
