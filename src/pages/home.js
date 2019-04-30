@@ -48,8 +48,14 @@ class Page extends Component {
   writeHistoryToState = (rawData) => {
     const newState = this.parseData(rawData);
     if (newState.history) {
-      // add current hour count to end of history
-      newState.history.push(newState.cumulative_count || 0);
+      // add new hourly count to end of new history array
+      newState.history.push(newState.cumulative_count);
+    } else {
+      // replace last item in history with a new hourly count
+      const history = this.state;
+      history.splice(-1);
+      history.push(newState.cumulative_count);
+      newState.history = history;
     }
     // newState.lineChartXAxis = [Date.now()];
     // for (let x = 0; x < 71; x += 1) {
