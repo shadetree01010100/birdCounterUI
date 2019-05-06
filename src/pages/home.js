@@ -53,7 +53,6 @@ class Page extends Component {
     } else {
       // replace last item in history with a new hourly count
       const { history } = this.state;
-      console.log(history);
       history.splice(-1);
       history.push(newState.cumulative_count);
       newState.history = history;
