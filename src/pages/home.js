@@ -52,7 +52,8 @@ class Page extends Component {
       newState.history.push(newState.cumulative_count);
     } else {
       // replace last item in history with a new hourly count
-      const history = this.state;
+      const { history } = this.state;
+      console.log(history);
       history.splice(-1);
       history.push(newState.cumulative_count);
       newState.history = history;
@@ -76,6 +77,7 @@ class Page extends Component {
     hour: 'numeric',
     minute: 'numeric',
     hour12: true,
+    timeZone: 'America/Denver',
   });
 
   getLabelTime = timestamp => new Date(timestamp).toLocaleString('en-US', {
@@ -83,6 +85,7 @@ class Page extends Component {
     day: 'numeric',
     hour: 'numeric',
     hour12: true,
+    timeZone: 'America/Denver',
   });
 
   speciesName = (rawName) => {
