@@ -19,7 +19,6 @@ class Page extends Component {
     lineChartXAxis: Array(72).fill(''),
     pieChartSpecies: '',
     pieChartData: [],
-    cumulative_count: 0,
   };
 
   componentDidMount = () => {
@@ -36,32 +35,15 @@ class Page extends Component {
 
   writeDataToState = (rawData) => {
     const newState = this.parseData(rawData);
+    const sortedTally = this.sortTally(newState.tally);
     newState.timestamp = this.getTime(newState.timestamp);
-    if (newState.tally) {
-      newState.pieChartData = [];
-      const sortedTally = this.sortTally(newState.tally);
-      sortedTally.forEach((v, k) => newState.pieChartData.push({ title: `${/\(([^)]+)\)/.exec(k)[1]} - ${v} sightings`, value: v, color: lightness('#3cafda', (Math.floor(Math.random() * 22) + 1)) }));
-    }
+    newState.pieChartData = [];
+    sortedTally.forEach((v, k) => newState.pieChartData.push({ title: `${/\(([^)]+)\)/.exec(k)[1]} - ${v} sightings`, value: v, color: lightness('#3cafda', (Math.floor(Math.random() * 22) + 1)) }));
     this.setState(newState);
   };
 
   writeHistoryToState = (rawData) => {
     const newState = this.parseData(rawData);
-    if (newState.history) {
-      // add new hourly count to end of new history array
-      newState.history.push(newState.cumulative_count);
-    } else {
-      // replace last item in history with a new hourly count
-      const { history } = this.state;
-      history.splice(-1);
-      history.push(newState.cumulative_count);
-      newState.history = history;
-    }
-    // newState.lineChartXAxis = [Date.now()];
-    // for (let x = 0; x < 71; x += 1) {
-    //   newState.lineChartXAxis.unshift(newState.lineChartXAxis[0] - (86.4 * 60000));
-    // }
-    // newState.lineChartXAxis = newState.lineChartXAxis.map(t => this.getLabelTime(t));
     this.setState(newState);
   };
 
