@@ -43,7 +43,6 @@ class Page extends Component {
   };
 
   writeHistoryToState = (rawData) => {
-      console.log(rawData)
     const newState = this.parseData(rawData);
     this.setState(newState);
   };
