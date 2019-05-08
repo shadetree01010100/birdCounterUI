@@ -10,7 +10,7 @@ function add(accumulator, a) {
 
 class Page extends Component {
   state = {
-   state: '',
+    state: '',
     image: '',
     predictions: [],
     tally: {},
@@ -43,6 +43,7 @@ class Page extends Component {
   };
 
   writeHistoryToState = (rawData) => {
+      console.log(rawData)
     const newState = this.parseData(rawData);
     this.setState(newState);
   };
@@ -149,8 +150,7 @@ class Page extends Component {
                     chartType: 'line',
                     datasets: [{ values: history }],
                     // labels: lineChartXAxis,
-                    // 72 items in history + 1 for current hour
-                    labels: Array(73).fill(''),
+                    labels: Array(72).fill(''),
                   }}
                   lineOptions={{
                     heatline: 1,
