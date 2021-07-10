@@ -1,0 +1,49 @@
+@import '~@nio/ui-kit/dist/nio';
+@import './assets/css/vars';
+@import './assets/css/base';
+
+/*    place your app-specific css below (or make component/view   */
+/*    specific scss files and throw them in the css folder)       */
+
+.quarter {
+  width: 25%;
+}
+
+.chartcell {
+  position:relative;
+}
+
+.progress {
+  height: 1.2rem !important;
+}
+
+.card {
+  &.topRow {
+    height: 430px;
+    @media only screen and (max-width: 767px) {
+      min-height: 430px;
+      height: auto;
+    }
+  }
+  &.bottomRow {
+    min-height: 260px;
+    height: 260px;
+    @media only screen and (max-width: 767px) {
+      height: auto;
+    }
+  }
+}
+
+.image-holder {
+  background-color:#8A8589;
+  text-align: center;
+  img {
+    height: 430px;
+  }
+}
+
+.piechart-legend {
+  text-align: center;
+  white-space: nowrap;
+  margin: 10px -15px;
+}
